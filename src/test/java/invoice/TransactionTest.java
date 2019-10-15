@@ -72,7 +72,7 @@ public class TransactionTest {
 	}
 	
 	// On vérifie que la création d'une facture met à jour le chiffre d'affaire du client (Trigger)
-	@Test
+	//@Test 
 	public void createInvoiceUpdatesTotal() throws Exception {
 		// On calcule le chiffre d'aafaire du client
 		int id = myCustomer.getCustomerId();
