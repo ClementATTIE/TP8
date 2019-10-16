@@ -82,24 +82,25 @@ public class DAO {
 			PreparedStatement statement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
                         statement.setInt(1, customer.getCustomerId());
                         statement.executeUpdate();
-                        ResultSet clef = statement.getGeneratedKeys();           
-                        
+                        ResultSet clef = statement.getGeneratedKeys(); 
+                        clef.next();
+                        //System.out.println("clef = " +clef.getInt(1));
                         for(int i = 0 ; i < productIDs.length; i++){
-                            String sql2 = "INSERT INTO ITEM (InvoiceID,ProductID,Quantity) VALUES ?,?,?";
+                            String sql2 = "INSERT INTO ITEM (InvoiceID, Item, ProductID, Quantity, Cost) VALUES (?,?,?,?, (Select Price FROM PRODUCT WHERE PRODUCT.ID = ? ))";
+                            
                              try (Connection connection2 = myDataSource.getConnection();
                             PreparedStatement statement2 = connection2.prepareStatement(sql2,Statement.RETURN_GENERATED_KEYS)) {
                                  statement2.setInt(1, clef.getInt(1));
-                                
-                                 statement2.setInt(2, productIDs[i]);
-                                 statement2.setInt(3, quantities[i]);
-                                 
+                                 statement2.setInt(2, i);
+                                 statement2.setInt(3, productIDs[i]);
+                                 statement2.setInt(4, quantities[i]);
+                                 statement2.setInt(5, productIDs[i]);
                                  statement2.executeUpdate();
                              }
                         }
             
             }
             
-		throw new UnsupportedOperationException("Pas encore implémenté");
 	}
 
 	/**

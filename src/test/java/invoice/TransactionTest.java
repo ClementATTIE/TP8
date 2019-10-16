@@ -72,7 +72,7 @@ public class TransactionTest {
 	}
 	
 	// On vérifie que la création d'une facture met à jour le chiffre d'affaire du client (Trigger)
-	//@Test 
+	@Test 
 	public void createInvoiceUpdatesTotal() throws Exception {
 		// On calcule le chiffre d'aafaire du client
 		int id = myCustomer.getCustomerId();
@@ -93,8 +93,51 @@ public class TransactionTest {
 
 		assertEquals(before + 2f * 10f, after, 0.001f);		
 	}
-	
+	@Test 
+	public void createInvoiceQauntiteeNegative() throws Exception {
+		// On calcule le chiffre d'aafaire du client
+		int id = myCustomer.getCustomerId();
+		float before = myDAO.totalForCustomer(id);
+		System.out.printf("Before: %f %n", before);
 
+		// Un tableau de 1 productID
+		int[] productIds = new int[]{0}; // Le produit 0 vaut 10 €
+		// Un tableau de 1 quantites
+		int[] quantities = new int[]{-20};
+		// On exécute la transaction
+		
+                try{
+                    myDAO.createInvoice(myCustomer, productIds, quantities);
+
+		          fail("quantitée négative");
+                }catch(Exception e){
+                                System.out.println(e);
+                }
+		
+	}
+
+        	@Test 
+	public void createInvoiceProductIdInconnu() throws Exception {
+		// On calcule le chiffre d'aafaire du client
+		int id = myCustomer.getCustomerId();
+		float before = myDAO.totalForCustomer(id);
+		System.out.printf("Before: %f %n", before);
+
+		// Un tableau de 1 productID
+		int[] productIds = new int[]{999}; // Le produit 0 vaut 10 €
+		// Un tableau de 1 quantites
+		int[] quantities = new int[]{2};
+		// On exécute la transaction
+		
+                try{
+                    myDAO.createInvoice(myCustomer, productIds, quantities);
+
+		          fail("id produit inconnu");
+                }catch(Exception e){
+                System.out.println(e);
+                }
+		
+	}
 	
 	public static DataSource getDataSource() throws SQLException {
 		org.hsqldb.jdbc.JDBCDataSource ds = new org.hsqldb.jdbc.JDBCDataSource();
